@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Redis } from 'ioredis';
 import { REDIS_CHANNELS } from './constants/redis_Channels';
-import { LogsService } from 'src/logs/logs.service';
+import { LogsService } from 'src/logs/logs_tickets.service';
 
 @Injectable()
 export class RedisService implements OnModuleInit {
@@ -69,7 +69,7 @@ export class RedisService implements OnModuleInit {
   }
 
   private async handleExitoCT(message: any) { await this.logsService.successCorreoTicket(message); }
-  private async handleErrorCT(message: any) { await this.logsService.errorCorreo(message); }
+  private async handleErrorCT(message: any) { await this.logsService.errorCorreoTicket(message); }
   private async handleGenerico(message: any) { await this.logsService.genericLog(message); }
   private async handleExitoCC(message: any) { await this.logsService.successCorreoContacto(message); }
   private async handleErrorCC(message: any) { await this.logsService.errorContacto(message); }

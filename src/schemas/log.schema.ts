@@ -1,16 +1,26 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Document } from 'mongoose';
 
-@Schema({ collection: 'Logs' })
-export class Logs extends Document {
-  @Prop({ type: Number })
+@Schema({ _id: false})
+export class LogEntry {
+  @Prop()
   Id: number;
-
-  @Prop({ required: true })
+  
+  @Prop()
   Log: string;
+  
+  @Prop()
+  Fecha_hora_log: string;
+}
 
-  @Prop({ type: Date })
-  Fecha_hora_log: Date;
+@Schema({ timestamps: true, collection: 'Logs'})
+export class Logs extends Document {
+  @Prop({ type: [LogEntry] })
+  Logs: LogEntry[];
+ 
+  @Prop({ type: String })
+  Tipo: string;
+
 }
 
 export const LogsSchema = SchemaFactory.createForClass(Logs);
