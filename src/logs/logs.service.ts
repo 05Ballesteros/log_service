@@ -4,6 +4,14 @@ import { Model, Types } from 'mongoose';
 import { Logs } from "src/schemas/log.schema"
 import { format } from 'date-fns';
 import { es } from "date-fns/locale"
+import { obtenerFechaActual } from 'src/utils/fechas';
+
+interface LogEntry {
+  Id: number;
+  Log: string;
+  Username: string;
+  Fecha_hora_log: Date;
+}
 
 @Injectable()
 export class LogsService {
@@ -18,7 +26,7 @@ export class LogsService {
             const log = new this.logsModel({
                 Id: message.Id,
                 Log: exito,
-                Fecha_hora_log: format(new Date(), "dd/MM/yyyy HH:mm:ss"),
+                Fecha_hora_log: obtenerFechaActual(),
             });
             await log.save();
             console.log("✅ Log guardado desde el microservicio");
@@ -34,7 +42,7 @@ export class LogsService {
             const log = new this.logsModel({
                 Id: message.Id,
                 Log: fallo,
-                Fecha_hora_log: format(new Date(), "dd/MM/yyyy HH:mm:ss"),
+                Fecha_hora_log: obtenerFechaActual(),
             });
             await log.save();
             console.log("✅ Log guardado");
@@ -48,7 +56,7 @@ export class LogsService {
         try {
             const log = new this.logsModel({
                 Log: message.message,
-                Fecha_hora_log: format(new Date(), "dd/MM/yyyy HH:mm:ss"),
+                Fecha_hora_log: obtenerFechaActual(),
             });
             await log.save();
             console.log("✅ Log guardado");
@@ -64,7 +72,7 @@ export class LogsService {
             const log = new this.logsModel({
                 Id: message.Id,
                 Log: exito,
-                Fecha_hora_log: format(new Date(), "dd/MM/yyyy HH:mm:ss"),
+                Fecha_hora_log: obtenerFechaActual(),
             });
             await log.save();
             console.log("✅ Log guardado");
@@ -80,7 +88,7 @@ export class LogsService {
             const log = new this.logsModel({
                 Id: message.Id,
                 Log: fallo,
-                Fecha_hora_log: format(new Date(), "dd/MM/yyyy HH:mm:ss"),
+                Fecha_hora_log: obtenerFechaActual(),
             });
             await log.save();
             console.log("✅ Log guardado");
@@ -96,7 +104,7 @@ export class LogsService {
             const log = new this.logsModel({
                 Id: message.Id,
                 Log: exito,
-                Fecha_hora_log: format(new Date(), "dd/MM/yyyy HH:mm:ss"),
+                Fecha_hora_log: obtenerFechaActual(),
             });
             await log.save();
             console.log("✅ Log guardado");
@@ -113,7 +121,7 @@ export class LogsService {
             const log = new this.logsModel({
                 Id: message.Id,
                 Log: fallo,
-                Fecha_hora_log: format(new Date(), "dd/MM/yyyy HH:mm:ss"),
+                Fecha_hora_log: obtenerFechaActual(),
             });
             await log.save();
             console.log("✅ Log guardado");
@@ -131,14 +139,21 @@ export class LogsService {
                 throw new NotFoundException("No se encontraron logs");
             }
 
-            const formattedResult = result.map((i) => {
-                const obj = i.toObject();
+            const formattedResult = result.map((doc) => {
+                const obj = doc.toObject();
+
+                const formattedLogs = obj.Logs?.map((entry: LogEntry) => ({
+                    ...entry,
+                    Fecha_hora_log: format(
+                        new Date(entry.Fecha_hora_log),
+                        "dd 'de' MMMM 'de' yyyy, h:mm aaaa",
+                        { locale: es }
+                    ),
+                }));
 
                 return {
                     ...obj,
-                    Fecha_hora_log: format(new Date(obj.Fecha_hora_log), "dd 'de' MMMM 'de' yyyy, h:mm aaaa", {
-                        locale: es,
-                    }),
+                    Logs: formattedLogs,
                 };
             });
 
@@ -146,5 +161,6 @@ export class LogsService {
         } catch (error) {
             throw new InternalServerErrorException("Ocurrió un error al obtener los logs");
         }
-    };
+    }
+
 }
