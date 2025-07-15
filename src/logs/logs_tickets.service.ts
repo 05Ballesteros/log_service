@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model, Types } from 'mongoose';
 import { Logs } from "src/schemas/log.schema"
 import { format } from 'date-fns';
+import { obtenerFechaActual } from 'src/utils/fechas';
 
 
 @Injectable()
@@ -22,7 +23,7 @@ export class LogsService {
                         Logs: {
                             Id: message.Id,
                             Log: exito,
-                            Fecha_hora_log: format(new Date(), "dd/MM/yyyy HH:mm:ss"),
+                            Fecha_hora_log: obtenerFechaActual(),
                         },
                     },
                 },
@@ -55,7 +56,7 @@ export class LogsService {
                         Logs: {
                             Id: message.Id,
                             Log: fallo,
-                            Fecha_hora_log: format(new Date(), "dd/MM/yyyy HH:mm:ss"),
+                            Fecha_hora_log: obtenerFechaActual(),
                         },
                     },
                 },
@@ -85,7 +86,7 @@ export class LogsService {
                     $push: {
                         Logs: {
                             Log: message.message,
-                            Fecha_hora_log: format(new Date(), "dd/MM/yyyy HH:mm:ss"),
+                            Fecha_hora_log: obtenerFechaActual(),
                         },
                     },
                 },
@@ -117,7 +118,7 @@ export class LogsService {
                         Logs: {
                             Id: message.Id,
                             Log: exito,
-                            Fecha_hora_log: format(new Date(), "dd/MM/yyyy HH:mm:ss"),
+                            Fecha_hora_log: obtenerFechaActual(),
                         },
                     },
                 },
@@ -149,7 +150,7 @@ export class LogsService {
                         Logs: {
                             Id: message.Id,
                             Log: fallo,
-                            Fecha_hora_log: format(new Date(), "dd/MM/yyyy HH:mm:ss"),
+                            Fecha_hora_log: obtenerFechaActual(),
                         },
                     },
                 },
@@ -181,7 +182,7 @@ export class LogsService {
                         Logs: {
                             Id: message.Id,
                             Log: exito,
-                            Fecha_hora_log: format(new Date(), "dd/MM/yyyy HH:mm:ss"),
+                            Fecha_hora_log: obtenerFechaActual(),
                         },
                     },
                 },
@@ -214,7 +215,7 @@ export class LogsService {
                         Logs: {
                             Id: message.Id,
                             Log: fallo,
-                            Fecha_hora_log: format(new Date(), "dd/MM/yyyy HH:mm:ss"),
+                            Fecha_hora_log: obtenerFechaActual(),
                         },
                     },
                 },

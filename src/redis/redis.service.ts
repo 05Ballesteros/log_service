@@ -2,13 +2,19 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Redis } from 'ioredis';
 import { REDIS_CHANNELS } from './constants/redis_Channels';
 import { LogsService } from 'src/logs/logs_tickets.service';
+import { UserLogsService } from 'src/logs/logs_usuarios.service';
+import { ClienteLogsService } from 'src/logs/logs_clientes.service';
 
 @Injectable()
 export class RedisService implements OnModuleInit {
   private redisClient: Redis;
   private subscriber: Redis;
 
-  constructor(private readonly logsService: LogsService) { // Inyección de dependencia
+  constructor(
+    private readonly logsService: LogsService,
+    private readonly userService: UserLogsService,
+    private readonly clienteService: ClienteLogsService,
+  ) {
     const redisOptions = {
       host: 'redis', // El nombre del servicio en Docker Compose
       port: 6379,    // Puerto expuesto por el contenedor
@@ -62,6 +68,36 @@ export class RedisService implements OnModuleInit {
       case REDIS_CHANNELS.ERROR_CORREO_PENDIENTE:
         await this.handleErrorCP(message);
         break;
+      case REDIS_CHANNELS.USUARIO_CREADO:
+        await this.handleUsuariocreado(message);
+        break;
+      case REDIS_CHANNELS.USUARIO_NO_CREADO:
+        await this.handleUsuarioNocreado(message);
+        break;
+      case REDIS_CHANNELS.USUARIO_ACTUALIZADO:
+        await this.handleUsuarioActualizado(message);
+        break;
+      case REDIS_CHANNELS.USUARIO_NO_ACTUALIZADO:
+        await this.handleUsuarioNoActualizado(message);
+        break;
+      case REDIS_CHANNELS.ESTADO_ACTUALIZADO:
+        await this.handleEstadoActualizado(message);
+        break;
+      case REDIS_CHANNELS.USUARIO_NO_ACTUALIZADO:
+        await this.handleEstadoNoActualizado(message);
+        break;
+      case REDIS_CHANNELS.CLIENTE_CREADO:
+        await this.handleClientecreado(message);
+        break;
+      case REDIS_CHANNELS.CLIENTE_NO_CREADO:
+        await this.handleCLienteNocreado(message);
+        break;
+      case REDIS_CHANNELS.CLIENTE_ACTUALIZADO:
+        await this.handleClienteActualizado(message);
+        break;
+      case REDIS_CHANNELS.CLIENTE_NO_ACTUALIZADO:
+        await this.handleClienteNOActualizado(message);
+        break;
       default:
         console.warn(`No existe el canal: ${channel}`);
         break;
@@ -75,10 +111,19 @@ export class RedisService implements OnModuleInit {
   private async handleErrorCC(message: any) { await this.logsService.errorContacto(message); }
   private async handleExitoCP(message: any) { await this.logsService.successPendiente(message); }
   private async handleErrorCP(message: any) { await this.logsService.errorPendiente(message); }
+  private async handleUsuariocreado(message: any) { await this.userService.usuarioCreado(message); }
+  private async handleUsuarioNocreado(message: any) { await this.userService.usuarioNoCreado(message); }
+  private async handleUsuarioActualizado(message: any) { await this.userService.usuarioActualizado(message); }
+  private async handleUsuarioNoActualizado(message: any) { await this.userService.usuarioNoActualizado(message); }
+  private async handleEstadoActualizado(message: any) { await this.userService.estadoActualizado(message); }
+  private async handleEstadoNoActualizado(message: any) { await this.userService.estadoNoActualizado(message); }
+  private async handleClientecreado(message: any) { await this.clienteService.clienteCreado(message); }
+  private async handleCLienteNocreado(message: any) { await this.clienteService.clienteNoCreado(message); }
+  private async handleClienteActualizado(message: any) { await this.clienteService.clienteActualizado(message); }
+  private async handleClienteNOActualizado(message: any) { await this.clienteService.clienteNoActualizado(message); }
   
   // Publicar mensajes en un canal
   publish(channel: string, message: any) {
-    console.log("message?", message);
     this.redisClient.publish(channel, JSON.stringify(message));
   }
 }

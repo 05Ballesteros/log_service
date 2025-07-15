@@ -8,9 +8,12 @@ export class LogEntry {
   
   @Prop()
   Log: string;
-  
+
   @Prop()
-  Fecha_hora_log: string;
+  Username: string;
+  
+  @Prop({ type: Date })
+  Fecha_hora_log: Date;
 }
 
 @Schema({ timestamps: true, collection: 'Logs'})

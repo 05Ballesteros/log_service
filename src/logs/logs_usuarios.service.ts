@@ -2,33 +2,32 @@ import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nes
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model, Types } from 'mongoose';
 import { Logs } from "src/schemas/log.schema"
-import { format } from 'date-fns';
+import { obtenerFechaActual } from 'src/utils/fechas';
 
 
 @Injectable()
-export class LogsService {
+export class UserLogsService {
     constructor(
         @InjectModel(Logs.name) private readonly logsModel: Model<Logs>,
     ) { }
 
-    async successCorreoTicket(message: any) {
-        console.log(message);
-        const exito = `✅ Ticket ${message.Id} ${message.accion}: correo enviado al usuario ${message.destinatario}, emails_extra: ${message.emails_extra} 13123123132`;
+    async usuarioCreado(message: any) {
+        console.log("EL mensaje llego correctemnte", message);
+        const log = `✅ Usuario ${message.Username} creado correctamente, correo enviado a: ${message.destinatario}.`;
         try {
             const logGuardado = await this.logsModel.findOneAndUpdate(
-                { Tipo: "Ticket" },
+                { Tipo: "Usuarios" },
                 {
                     $push: {
                         Logs: {
-                            Id: message.Id,
-                            Log: exito,
-                            Fecha_hora_log: format(new Date(), "dd/MM/yyyy HH:mm:ss"),
+                            Username: message.Username,
+                            Log: log,
+                            Fecha_hora_log: obtenerFechaActual(),
                         },
                     },
                 },
                 { new: true, upsert: true }
             );
-            console.log("Resultado:", logGuardado);
 
             if (!logGuardado) {
                 console.log("❌ Error al guardar el log");
@@ -43,25 +42,22 @@ export class LogsService {
         }
     }
 
-
-    async errorCorreoTicket(message: any) {
-        console.log(message);
-        const fallo = ` Ticket ${message.Id} ${message.accion}: error enviado correo al usuario ${message.destinatario}, emails_extra: ${message.emails_extra}, correo agregado a la fila.`;
+    async usuarioNoCreado(message: any) {
+        console.log("EL mensaje llego correctemnte", message);
+        const log = `❌ No se pudo crear el usuario para: ${message.Nombre}. ${message.error}`;
         try {
             const logGuardado = await this.logsModel.findOneAndUpdate(
-                { Tipo: "Ticket" },
+                { Tipo: "Usuarios" },
                 {
                     $push: {
                         Logs: {
-                            Id: message.Id,
-                            Log: fallo,
-                            Fecha_hora_log: format(new Date(), "dd/MM/yyyy HH:mm:ss"),
+                            Log: log,
+                            Fecha_hora_log: obtenerFechaActual(),
                         },
                     },
                 },
                 { new: true, upsert: true }
             );
-            console.log("Resultado:", logGuardado);
 
             if (!logGuardado) {
                 console.log("❌ Error al guardar el log");
@@ -76,22 +72,23 @@ export class LogsService {
         }
     }
 
-    async genericLog(message: any) {
-        console.log(message);
+    async usuarioActualizado(message: any) {
+        console.log("EL mensaje llego correctemnte", message);
+        const log = `✅ Usuario ${message.Username} actualizado correctamente.`;
         try {
             const logGuardado = await this.logsModel.findOneAndUpdate(
-                { Tipo: "Ticket" },
+                { Tipo: "Usuarios" },
                 {
                     $push: {
                         Logs: {
-                            Log: message.message,
-                            Fecha_hora_log: format(new Date(), "dd/MM/yyyy HH:mm:ss"),
+                            Username: message.Username,
+                            Log: log,
+                            Fecha_hora_log: obtenerFechaActual(),
                         },
                     },
                 },
                 { new: true, upsert: true }
             );
-            console.log("Resultado:", logGuardado);
 
             if (!logGuardado) {
                 console.log("❌ Error al guardar el log");
@@ -106,24 +103,23 @@ export class LogsService {
         }
     }
 
-    async successCorreoContacto(message: any) {
-        console.log(message);
-        const exito = `✅ Cliente contactado por ticket ${message.Id}: correo enviado al cliente ${message.destinatario}, emails_extra: ${message.emails_extra}`;
+    async usuarioNoActualizado(message: any) {
+        console.log("EL mensaje llego correctemnte", message);
+        const log = `❌ No se pudo actualizar el usuario: ${message.Username}. ${message.error}`;
         try {
             const logGuardado = await this.logsModel.findOneAndUpdate(
-                { Tipo: "Ticket" },
+                { Tipo: "Usuarios" },
                 {
                     $push: {
                         Logs: {
-                            Id: message.Id,
-                            Log: exito,
-                            Fecha_hora_log: format(new Date(), "dd/MM/yyyy HH:mm:ss"),
+                            Username: message.Username,
+                            Log: log,
+                            Fecha_hora_log: obtenerFechaActual(),
                         },
                     },
                 },
                 { new: true, upsert: true }
             );
-            console.log("Resultado:", logGuardado);
 
             if (!logGuardado) {
                 console.log("❌ Error al guardar el log");
@@ -138,24 +134,23 @@ export class LogsService {
         }
     }
 
-    async errorContacto(message: any) {
-        console.log(message);
-        const fallo = `❌ Error al contactar cliente por ticket ${message.Id}: error enviando correo al cliente ${message.destinatario}, emails_extra: ${message.emails_extra}`;
+    async estadoActualizado(message: any) {
+        console.log("EL mensaje llego correctemnte", message);
+        const log = `✅ ${message.message}`;
         try {
             const logGuardado = await this.logsModel.findOneAndUpdate(
-                { Tipo: "Ticket" },
+                { Tipo: "Usuarios" },
                 {
                     $push: {
                         Logs: {
-                            Id: message.Id,
-                            Log: fallo,
-                            Fecha_hora_log: format(new Date(), "dd/MM/yyyy HH:mm:ss"),
+                            Username: message.Username,
+                            Log: log,
+                            Fecha_hora_log: obtenerFechaActual(),
                         },
                     },
                 },
                 { new: true, upsert: true }
             );
-            console.log("Resultado:", logGuardado);
 
             if (!logGuardado) {
                 console.log("❌ Error al guardar el log");
@@ -170,57 +165,23 @@ export class LogsService {
         }
     }
 
-    async successPendiente(message: any) {
-        console.log(message);
-        const exito = `✅ Ticket ${message.Id} marcado como pendiente: correo enviado al cliente ${message.destinatario}, emails_extra: ${message.emails_extra}`;
+    async estadoNoActualizado(message: any) {
+        console.log("EL mensaje llego correctemnte", message);
+        const log = `✅ ${message.message}`;
         try {
             const logGuardado = await this.logsModel.findOneAndUpdate(
-                { Tipo: "Ticket" },
+                { Tipo: "Usuarios" },
                 {
                     $push: {
                         Logs: {
-                            Id: message.Id,
-                            Log: exito,
-                            Fecha_hora_log: format(new Date(), "dd/MM/yyyy HH:mm:ss"),
+                            Username: message.Username,
+                            Log: log,
+                            Fecha_hora_log: obtenerFechaActual(),
                         },
                     },
                 },
                 { new: true, upsert: true }
             );
-            console.log("Resultado:", logGuardado);
-
-            if (!logGuardado) {
-                console.log("❌ Error al guardar el log");
-                throw new BadRequestException("Error al capturar logs.");
-            } else {
-                console.log("✅ Log guardado");
-                return true;
-            }
-
-        } catch (error) {
-            throw new BadRequestException("Error al capturar logs.");
-        }
-    }
-
-    //async errorPendiente(Id: number, destinatario: string, emails_extra: string[]) {
-    async errorPendiente(message: any) {
-        console.log(message);
-        const fallo = `❌ Ticket ${message.Id} marcado como pendiente: error enviando correo al cliente ${message.destinatario}, emails_extra: ${message.emails_extra}`;
-        try {
-            const logGuardado = await this.logsModel.findOneAndUpdate(
-                { Tipo: "Ticket" },
-                {
-                    $push: {
-                        Logs: {
-                            Id: message.Id,
-                            Log: fallo,
-                            Fecha_hora_log: format(new Date(), "dd/MM/yyyy HH:mm:ss"),
-                        },
-                    },
-                },
-                { new: true, upsert: true }
-            );
-            console.log("Resultado:", logGuardado);
 
             if (!logGuardado) {
                 console.log("❌ Error al guardar el log");
