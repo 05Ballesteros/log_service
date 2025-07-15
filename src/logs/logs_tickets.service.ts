@@ -7,7 +7,7 @@ import { obtenerFechaActual } from 'src/utils/fechas';
 
 
 @Injectable()
-export class LogsService {
+export class LogsTicketsService {
     constructor(
         @InjectModel(Logs.name) private readonly logsModel: Model<Logs>,
     ) { }

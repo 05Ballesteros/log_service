@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { LogsController } from './logs/logs.controller';
-import { LogsService } from './logs/logs_tickets.service';
 import { LogsModule } from './logs/logs.module';
 import { RedisModule } from './redis/redis.module';
 import { RedisController } from './redis/redis.controller';

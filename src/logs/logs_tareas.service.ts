@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 
 
 @Injectable()
-export class LogsService {
+export class LogsTareasService {
     constructor(
         @InjectModel(Logs.name) private readonly logsModel: Model<Logs>,
     ) { }

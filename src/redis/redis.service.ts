@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Redis } from 'ioredis';
 import { REDIS_CHANNELS } from './constants/redis_Channels';
-import { LogsService } from 'src/logs/logs_tickets.service';
+import { LogsTicketsService } from 'src/logs/logs_tickets.service';
 import { UserLogsService } from 'src/logs/logs_usuarios.service';
 import { ClienteLogsService } from 'src/logs/logs_clientes.service';
 
@@ -11,7 +11,7 @@ export class RedisService implements OnModuleInit {
   private subscriber: Redis;
 
   constructor(
-    private readonly logsService: LogsService,
+    private readonly logsService: LogsTicketsService,
     private readonly userService: UserLogsService,
     private readonly clienteService: ClienteLogsService,
   ) {
